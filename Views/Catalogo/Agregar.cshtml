@@ -1,0 +1,329 @@
+﻿@model Catalogo.Models.Item
+@{
+    ViewData["Title"] = "Agregar Jugador";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>⚽ Agregar Jugador</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Bebas+Neue&family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-dark: #060a13;
+            --gold: #d4a017;
+            --gold-light: #f0d060;
+            --red-accent: #c41e3a;
+            --cyan: #00d4ff;
+            --white: #ffffff;
+            --gray-light: #b0b8c8;
+            --font-display: 'Bebas Neue', sans-serif;
+            --font-heading: 'Oswald', sans-serif;
+            --font-body: 'Barlow', sans-serif;
+            --font-condensed: 'Barlow Condensed', sans-serif;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--white);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 30% 30%, rgba(212,160,23,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 70%, rgba(196,30,58,0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 700px;
+            background: linear-gradient(160deg, #0f1f35 0%, #0a1525 50%, #111d30 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(212,160,23,0.2);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 60px rgba(212,160,23,0.06);
+            padding: 40px;
+            position: relative;
+            z-index: 1;
+            animation: fadeUp 0.6s ease;
+        }
+
+        @@keyframes fadeUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 36px;
+        }
+
+        .form-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, rgba(212,160,23,0.15), rgba(212,160,23,0.05));
+            border: 1px solid rgba(212,160,23,0.3);
+            border-radius: 50px;
+            padding: 6px 20px;
+            font-family: var(--font-condensed);
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 12px;
+        }
+
+        .form-title {
+            font-family: var(--font-display);
+            font-size: 42px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            background: linear-gradient(180deg, #fff 30%, var(--gold-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-label {
+            font-family: var(--font-condensed);
+            font-size: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .form-input,
+        .form-textarea {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: var(--white);
+            font-family: var(--font-body);
+            font-size: 15px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            border-color: var(--gold);
+            background: rgba(212,160,23,0.06);
+            box-shadow: 0 0 0 3px rgba(212,160,23,0.1);
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: rgba(176,184,200,0.4);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 16px;
+            margin-top: 28px;
+            justify-content: center;
+        }
+
+        .btn-submit {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--gold), #b8860b);
+            color: var(--bg-dark);
+            padding: 14px 36px;
+            border-radius: 10px;
+            border: none;
+            font-family: var(--font-heading);
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(212,160,23,0.3);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(212,160,23,0.4);
+        }
+
+        .btn-back {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.15);
+            color: var(--gray-light);
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-family: var(--font-heading);
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            border-color: rgba(255,255,255,0.3);
+            color: var(--white);
+        }
+
+        @@media (max-width: 600px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .form-container { padding: 24px; }
+            .form-actions { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-container">
+    <div class="form-header">
+        <div class="form-badge">⚽ Nuevo Registro</div>
+        <h1 class="form-title">Agregar Jugador</h1>
+    </div>
+
+    <form asp-action="Agregar" method="post">
+        <div class="form-grid">
+            <div class="form-group full-width">
+                <label class="form-label">Nombre completo</label>
+                <input asp-for="Nombre" class="form-input" placeholder="Ej: Lionel Messi" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Posición</label>
+                <input asp-for="Posicion" class="form-input" placeholder="Ej: Delantero" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Posición corta</label>
+                <input asp-for="PosicionCorta" class="form-input" placeholder="Ej: LW, ST, RW" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">País</label>
+                <input asp-for="Pais" class="form-input" placeholder="Ej: Argentina" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Código país</label>
+                <input asp-for="PaisCodigo" class="form-input" placeholder="Ej: ARG" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Bandera (emoji)</label>
+                <input asp-for="Bandera" class="form-input" placeholder="Ej: 🇦🇷" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Equipo actual</label>
+                <input asp-for="Equipo" class="form-input" placeholder="Ej: Inter Miami" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Fecha nacimiento</label>
+                <input asp-for="FechaNacimiento" class="form-input" placeholder="DD/MM/AAAA" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Altura (cm)</label>
+                <input asp-for="AlturaCm" type="number" class="form-input" placeholder="170" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Peso (kg)</label>
+                <input asp-for="PesoKg" type="number" class="form-input" placeholder="72" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label"># Camiseta</label>
+                <input asp-for="NumeroCamiseta" type="number" class="form-input" placeholder="10" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Pie dominante</label>
+                <input asp-for="PieDominante" class="form-input" placeholder="Izquierdo / Derecho" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Goles</label>
+                <input asp-for="Goles" type="number" class="form-input" placeholder="838" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Asistencias</label>
+                <input asp-for="Asistencias" type="number" class="form-input" placeholder="374" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Partidos</label>
+                <input asp-for="Partidos" type="number" class="form-input" placeholder="1067" required />
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Foto URL</label>
+                <input asp-for="FotoUrl" class="form-input" placeholder="https://..." />
+            </div>
+
+            <div class="form-group full-width">
+                <label class="form-label">Clubes (separados por coma)</label>
+                <input asp-for="Clubes" class="form-input" placeholder="Barcelona, PSG, Inter Miami" required />
+            </div>
+
+            <div class="form-group full-width">
+                <label class="form-label">Descripción / Biografía</label>
+                <textarea asp-for="Descripcion" class="form-textarea" placeholder="Escribe una breve biografía del jugador..." required></textarea>
+            </div>
+        </div>
+
+        <div class="form-actions">
+            <a href="/Catalogo" class="btn-back">&#10094; Volver</a>
+            <button type="submit" class="btn-submit">Guardar Jugador ⚽</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>

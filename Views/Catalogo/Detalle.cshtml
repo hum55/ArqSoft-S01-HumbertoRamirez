@@ -1,0 +1,401 @@
+﻿@model Catalogo.Models.Item
+@{
+    ViewData["Title"] = Model.Nombre;
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>⚽ @Model.Nombre - Detalle</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Bebas+Neue&family=Barlow+Condensed:wght@400;500;600;700&family=Barlow:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg-dark: #060a13;
+            --gold: #d4a017;
+            --gold-light: #f0d060;
+            --red-accent: #c41e3a;
+            --white: #ffffff;
+            --gray-light: #b0b8c8;
+            --cyan: #00d4ff;
+            --font-display: 'Bebas Neue', sans-serif;
+            --font-heading: 'Oswald', sans-serif;
+            --font-body: 'Barlow', sans-serif;
+            --font-condensed: 'Barlow Condensed', sans-serif;
+        }
+
+        body {
+            background: var(--bg-dark);
+            color: var(--white);
+            font-family: var(--font-body);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(26,115,232,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 30%, rgba(212,160,23,0.05) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .detail-container {
+            width: 100%;
+            max-width: 900px;
+            background: linear-gradient(160deg, #0f1f35, #0a1525, #111d30);
+            border-radius: 20px;
+            border: 1px solid rgba(212,160,23,0.2);
+            box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 60px rgba(212,160,23,0.06);
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+            animation: fadeUp 0.6s ease;
+        }
+
+        @@keyframes fadeUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hero {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            padding: 40px;
+            align-items: center;
+        }
+
+        .photo-section {
+            flex: 0 0 260px;
+            text-align: center;
+        }
+
+        .photo-bg {
+            width: 240px;
+            height: 280px;
+            margin: 0 auto;
+            background: radial-gradient(circle at 50% 60%, rgba(0,212,255,0.1) 0%, transparent 60%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            border: 1px solid rgba(212,160,23,0.1);
+        }
+
+        .photo-bg svg {
+            width: 140px;
+            height: 220px;
+            fill: rgba(0,212,255,0.12);
+        }
+
+        .info-section {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .flag-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 8px;
+        }
+
+        .flag { font-size: 36px; }
+
+        .country-name {
+            font-family: var(--font-condensed);
+            font-size: 14px;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        .player-name {
+            font-family: var(--font-display);
+            font-size: clamp(36px, 5vw, 52px);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            line-height: 1;
+            margin-bottom: 8px;
+            background: linear-gradient(180deg, #fff 30%, var(--gold-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .position-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: linear-gradient(135deg, var(--red-accent), #8b1528);
+            border-radius: 6px;
+            padding: 5px 14px;
+            font-family: var(--font-condensed);
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+        }
+
+        .specs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 12px;
+        }
+
+        .spec-item {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 10px;
+            padding: 12px;
+            text-align: center;
+            transition: border-color 0.3s;
+        }
+
+        .spec-item:hover { border-color: rgba(212,160,23,0.3); }
+
+        .spec-value {
+            font-family: var(--font-display);
+            font-size: 22px;
+            color: var(--gold-light);
+        }
+
+        .spec-label {
+            font-family: var(--font-condensed);
+            font-size: 11px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gray-light);
+            margin-top: 2px;
+        }
+
+        .stats-section, .details-section {
+            padding: 0 40px 24px;
+        }
+
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(212,160,23,0.3), transparent);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, rgba(212,160,23,0.08), rgba(212,160,23,0.02));
+            border: 1px solid rgba(212,160,23,0.12);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .stat-box:hover {
+            border-color: rgba(212,160,23,0.35);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .stat-number {
+            font-family: var(--font-display);
+            font-size: 38px;
+            color: var(--gold-light);
+            line-height: 1;
+        }
+
+        .stat-name {
+            font-family: var(--font-condensed);
+            font-size: 12px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--gray-light);
+            margin-top: 6px;
+        }
+
+        .clubs-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .club-tag {
+            background: rgba(255,255,255,0.06);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px;
+            padding: 6px 16px;
+            font-family: var(--font-condensed);
+            font-size: 13px;
+            letter-spacing: 1px;
+            color: var(--gray-light);
+            transition: all 0.3s;
+        }
+
+        .club-tag:hover {
+            border-color: rgba(0,212,255,0.3);
+            color: var(--cyan);
+        }
+
+        .bio-text {
+            font-family: var(--font-body);
+            font-size: 15px;
+            line-height: 1.7;
+            color: var(--gray-light);
+            font-weight: 300;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, var(--gold), #b8860b);
+            color: var(--bg-dark);
+            padding: 14px 32px;
+            border-radius: 10px;
+            font-family: var(--font-heading);
+            font-size: 16px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-decoration: none;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(212,160,23,0.3);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(212,160,23,0.4);
+            color: var(--bg-dark);
+        }
+
+        @@media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding: 30px 20px 20px;
+            }
+            .photo-section { flex: 0 0 auto; }
+            .flag-row { justify-content: center; }
+            .stats-section, .details-section { padding: 0 20px 20px; }
+            .stats-grid { gap: 10px; }
+            .stat-number { font-size: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="detail-container">
+    <div class="hero">
+        <div class="photo-section">
+            <div class="photo-bg">
+                <svg viewBox="0 0 100 150" xmlns="http://www.w3.org/2000/svg">
+                    <circle cx="50" cy="22" r="18"/>
+                    <path d="M50 42 C25 42 18 70 18 90 L82 90 C82 70 75 42 50 42Z"/>
+                    <rect x="22" y="90" width="20" height="50" rx="8"/>
+                    <rect x="58" y="90" width="20" height="50" rx="8"/>
+                </svg>
+            </div>
+        </div>
+
+        <div class="info-section">
+            <div class="flag-row">
+                <span class="flag">@Model.Bandera</span>
+                <span class="country-name">@Model.Pais</span>
+            </div>
+            <h1 class="player-name">@Model.Nombre</h1>
+            <div class="position-badge">#@Model.NumeroCamiseta &bull; @Model.Posicion</div>
+
+            <div class="specs">
+                <div class="spec-item">
+                    <div class="spec-value">@Model.FechaNacimiento</div>
+                    <div class="spec-label">Nacimiento</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-value">@Model.AlturaCm cm</div>
+                    <div class="spec-label">Altura</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-value">@Model.PesoKg kg</div>
+                    <div class="spec-label">Peso</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-value">#@Model.NumeroCamiseta</div>
+                    <div class="spec-label">Camiseta</div>
+                </div>
+                <div class="spec-item">
+                    <div class="spec-value">@Model.PieDominante</div>
+                    <div class="spec-label">Pie</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-section">
+        <div class="section-title">Estadísticas</div>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-number">@Model.Goles</div>
+                <div class="stat-name">Goles</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">@Model.Asistencias</div>
+                <div class="stat-name">Asistencias</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">@Model.Partidos</div>
+                <div class="stat-name">Partidos</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="details-section">
+        <div class="section-title">Clubes</div>
+        <div class="clubs-list">
+            @foreach (var club in Model.Clubes.Split(','))
+            {
+                <span class="club-tag">@club.Trim()</span>
+            }
+        </div>
+
+        <div class="section-title">Biografía</div>
+        <p class="bio-text">@Model.Descripcion</p>
+
+        <a href="/Catalogo" class="back-btn">&#10094; Volver al catálogo</a>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,335 @@
+@model IEnumerable<Catalogo.Models.Item>
+@{
+    ViewData["Title"] = "Leyendas";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Leyendas del Futbol</title>
+    <link href="https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@100;200;300;400;500&family=Raleway:wght@200;300;400;500&family=Oswald:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+        html{scroll-behavior:smooth;}
+        body{font-family:'Raleway',sans-serif;background:#060810;color:#e8e4df;overflow:hidden;height:100vh;width:100vw;}
+
+        /* ===== MOSAIC ===== */
+        .mosaic-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;display:flex;}
+        .mosaic-col{flex:1;height:100%;overflow:hidden;position:relative;}
+        .mosaic-col img{width:100%;height:120%;object-fit:cover;position:absolute;top:-10%;left:0;animation:mosaicDrift 20s ease-in-out infinite alternate;filter:brightness(0.65) saturate(0.85);}
+        .mosaic-col:nth-child(2) img{animation-delay:-4s;animation-duration:22s;}
+        .mosaic-col:nth-child(3) img{animation-delay:-8s;animation-duration:18s;}
+        .mosaic-col:nth-child(4) img{animation-delay:-12s;animation-duration:24s;}
+        .mosaic-col:nth-child(5) img{animation-delay:-6s;animation-duration:21s;}
+        @@keyframes mosaicDrift{0%{transform:scale(1) translateY(0);}100%{transform:scale(1.08) translateY(-5%);}}
+
+        .mosaic-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:1;background:linear-gradient(180deg,rgba(6,8,16,0.55) 0%,rgba(6,8,16,0.35) 40%,rgba(6,8,16,0.65) 100%);transition:background 0.6s ease;}
+        .mosaic-overlay.dimmed{background:rgba(2,3,6,0.96);}
+
+        .particles{position:fixed;top:0;left:0;width:100%;height:100%;z-index:2;pointer-events:none;}
+        .particle{position:absolute;width:2px;height:2px;background:rgba(212,180,80,0.5);border-radius:50%;animation:pFloat linear infinite;}
+        @@keyframes pFloat{0%{transform:translateY(100vh) translateX(0);opacity:0;}10%{opacity:1;}90%{opacity:1;}100%{transform:translateY(-10vh) translateX(60px);opacity:0;}}
+
+        /* ===== HEADER (MAS BRILLANTE) ===== */
+        .header{position:absolute;top:0;left:0;width:100%;z-index:10;text-align:center;padding:35px 20px 15px;}
+        .header-tag{font-size:9px;font-weight:400;letter-spacing:5px;text-transform:uppercase;color:rgba(212,180,80,0.8);border:1px solid rgba(212,180,80,0.35);display:inline-block;padding:5px 18px;margin-bottom:14px;}
+        .header-title{font-family:'Josefin Sans',sans-serif;font-size:clamp(28px,5vw,52px);font-weight:200;letter-spacing:8px;text-transform:uppercase;color:#fff;text-shadow:0 2px 20px rgba(0,0,0,0.5);margin-bottom:6px;}
+        .header-sub{font-size:10px;font-weight:300;letter-spacing:5px;text-transform:uppercase;color:rgba(228,220,210,0.55);}
+
+        /* ===== 3D CAROUSEL ===== */
+        .carousel-section{position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);z-index:10;perspective:1200px;}
+        .carousel-track{position:relative;width:320px;height:470px;transform-style:preserve-3d;transition:transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94);}
+
+        /* ===== CARD (MAS BRILLANTE) ===== */
+        .card-3d{position:absolute;width:320px;height:470px;backface-visibility:hidden;transition:all 0.8s cubic-bezier(0.25,0.46,0.45,0.94);cursor:pointer;}
+        .card-face{width:100%;height:100%;background:linear-gradient(170deg,rgba(18,24,42,0.96),rgba(12,16,32,0.98));border:1px solid rgba(212,180,80,0.22);border-radius:4px;overflow:hidden;display:flex;flex-direction:column;position:relative;transition:all 0.4s ease;}
+        .card-3d:hover .card-face{border-color:rgba(212,180,80,0.5);box-shadow:0 0 50px rgba(212,180,80,0.12),0 20px 60px rgba(0,0,0,0.4);}
+        .card-face::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(212,180,80,0.4),transparent);}
+
+        .c-header{display:flex;justify-content:space-between;padding:18px 18px 0;position:relative;z-index:2;}
+        .c-num{font-family:'Josefin Sans',sans-serif;font-size:42px;font-weight:200;color:rgba(212,180,80,0.9);line-height:1;}
+        .c-pos{font-size:9px;letter-spacing:2px;color:rgba(228,220,210,0.5);text-transform:uppercase;margin-top:3px;}
+        .c-country{text-align:right;}
+        .c-flag{font-size:11px;letter-spacing:2px;font-weight:400;color:rgba(228,220,210,0.65);}
+        .c-code{font-size:8px;letter-spacing:3px;color:rgba(228,220,210,0.35);}
+
+        .c-center{flex:1;display:flex;align-items:center;justify-content:center;position:relative;}
+        .c-glow{position:absolute;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,rgba(212,180,80,0.08) 0%,transparent 70%);}
+        .c-sil{position:relative;z-index:1;width:90px;height:140px;animation:floatC 4s ease-in-out infinite;}
+        .c-sil svg{width:100%;height:100%;fill:rgba(228,220,210,0.1);}
+        @@keyframes floatC{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
+
+        .c-bottom{padding:0 18px 18px;position:relative;z-index:2;}
+        .c-line{height:1px;margin-bottom:10px;background:linear-gradient(90deg,rgba(212,180,80,0.35),transparent);}
+        .c-name{font-family:'Josefin Sans',sans-serif;font-size:16px;font-weight:300;letter-spacing:4px;text-transform:uppercase;color:#fff;margin-bottom:3px;}
+        .c-team{font-size:9px;font-weight:300;letter-spacing:2px;color:rgba(228,220,210,0.4);text-transform:uppercase;margin-bottom:14px;}
+        .c-stats{display:flex;gap:16px;}
+        .c-sv{font-family:'Josefin Sans',sans-serif;font-size:18px;font-weight:300;color:rgba(212,180,80,0.8);}
+        .c-sl{font-size:7px;letter-spacing:2px;color:rgba(228,220,210,0.3);text-transform:uppercase;}
+
+        /* NAV */
+        .nav-btn{position:fixed;top:50%;z-index:20;width:48px;height:48px;border-radius:50%;border:1px solid rgba(228,220,210,0.12);background:rgba(6,8,16,0.6);color:rgba(228,220,210,0.4);font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s ease;backdrop-filter:blur(6px);}
+        .nav-btn:hover{border-color:rgba(212,180,80,0.3);color:rgba(212,180,80,0.7);}
+        .nav-prev{left:30px;transform:translateY(-50%);}.nav-next{right:30px;transform:translateY(-50%);}
+
+        .dots{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);z-index:10;display:flex;gap:10px;}
+        .dot{width:6px;height:6px;border-radius:50%;background:rgba(228,220,210,0.15);cursor:pointer;transition:all 0.4s ease;}
+        .dot.active{background:rgba(212,180,80,0.6);box-shadow:0 0 8px rgba(212,180,80,0.3);transform:scale(1.4);}
+
+        .add-wrap{position:fixed;bottom:24px;right:40px;z-index:10;}
+        .add-btn{padding:10px 28px;background:transparent;border:1px solid rgba(212,180,80,0.2);color:rgba(212,180,80,0.5);font-size:10px;font-weight:400;letter-spacing:3px;text-transform:uppercase;text-decoration:none;transition:all 0.4s ease;}
+        .add-btn:hover{border-color:rgba(212,180,80,0.5);color:rgba(212,180,80,0.8);background:rgba(212,180,80,0.05);}
+
+        /* ===== LEGEND VIEW ===== */
+        .legend-bg{position:fixed;top:0;left:0;width:100%;height:100%;z-index:100;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all 0.5s ease;pointer-events:none;}
+        .legend-bg.open{opacity:1;visibility:visible;pointer-events:all;}
+
+        .legend-card{width:360px;height:520px;background:linear-gradient(170deg,rgba(16,20,38,0.98),rgba(8,12,24,0.99));border:1px solid rgba(212,180,80,0.25);border-radius:4px;position:relative;overflow:hidden;transform:scale(0.6) translateY(80px);transition:transform 0.7s cubic-bezier(0.16,1,0.3,1),box-shadow 0.7s ease;display:flex;flex-direction:column;}
+        .legend-bg.open .legend-card{transform:scale(1) translateY(0);box-shadow:0 0 80px rgba(212,180,80,0.15),0 0 160px rgba(212,180,80,0.05),0 40px 80px rgba(0,0,0,0.6);}
+        .legend-card::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent 40%,rgba(212,180,80,0.08) 50%,transparent 60%);animation:shine 3s ease-in-out infinite;pointer-events:none;z-index:5;}
+        @@keyframes shine{0%{transform:translateX(-100%) translateY(-100%);}100%{transform:translateX(100%) translateY(100%);}}
+        .legend-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(212,180,80,0.5),transparent);z-index:6;}
+
+        .l-top{display:flex;justify-content:space-between;padding:24px 24px 0;position:relative;z-index:3;}
+        .l-num{font-family:'Josefin Sans',sans-serif;font-size:52px;font-weight:200;color:rgba(212,180,80,0.9);line-height:1;}
+        .l-pos{font-size:10px;letter-spacing:3px;color:rgba(228,220,210,0.5);text-transform:uppercase;}
+        .l-flag{font-size:12px;letter-spacing:2px;color:rgba(228,220,210,0.6);}
+        .l-code{font-size:9px;letter-spacing:3px;color:rgba(228,220,210,0.35);}
+
+        .l-center{flex:1;display:flex;align-items:center;justify-content:center;position:relative;}
+        .l-glow{position:absolute;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(212,180,80,0.1) 0%,transparent 70%);animation:pulseG 3s ease-in-out infinite;}
+        @@keyframes pulseG{0%,100%{opacity:0.5;transform:scale(1);}50%{opacity:1;transform:scale(1.15);}}
+        .l-sil{position:relative;z-index:1;width:120px;height:190px;animation:floatL 4s ease-in-out infinite;}
+        .l-sil svg{width:100%;height:100%;fill:rgba(228,220,210,0.1);}
+        @@keyframes floatL{0%,100%{transform:translateY(0);}50%{transform:translateY(-10px);}}
+
+        .l-bottom{padding:0 24px 24px;position:relative;z-index:3;}
+        .l-line{height:1px;margin-bottom:14px;background:linear-gradient(90deg,rgba(212,180,80,0.4),transparent);}
+        .l-name{font-family:'Josefin Sans',sans-serif;font-size:22px;font-weight:300;letter-spacing:5px;text-transform:uppercase;color:#fff;margin-bottom:4px;}
+        .l-team{font-size:9px;font-weight:300;letter-spacing:3px;color:rgba(228,220,210,0.4);text-transform:uppercase;margin-bottom:16px;}
+        .l-stats{display:flex;gap:20px;}
+        .l-sv{font-family:'Josefin Sans',sans-serif;font-size:22px;font-weight:200;color:rgba(212,180,80,0.85);}
+        .l-sl{font-size:8px;letter-spacing:2px;color:rgba(228,220,210,0.3);text-transform:uppercase;}
+
+        /* Info panel - MAS VISIBLE */
+        .legend-info{position:fixed;right:40px;top:50%;transform:translateY(-50%) translateX(20px);z-index:101;width:300px;opacity:0;visibility:hidden;transition:all 0.6s cubic-bezier(0.16,1,0.3,1) 0.3s;}
+        .legend-bg.open ~ .legend-info{opacity:1;visibility:visible;transform:translateY(-50%) translateX(0);}
+        .i-section{margin-bottom:18px;}
+        .i-title{font-family:'Josefin Sans',sans-serif;font-size:10px;font-weight:300;letter-spacing:4px;text-transform:uppercase;color:rgba(212,180,80,0.6);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+        .i-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(212,180,80,0.2),transparent);}
+        .i-specs{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+        .i-spec{padding:10px;background:rgba(228,220,210,0.03);border:1px solid rgba(228,220,210,0.06);text-align:center;}
+        .i-sv{font-family:'Josefin Sans',sans-serif;font-size:15px;font-weight:300;color:rgba(212,180,80,0.75);}
+        .i-sl{font-size:7px;letter-spacing:2px;color:rgba(228,220,210,0.3);text-transform:uppercase;margin-top:2px;}
+        .i-clubs{display:flex;flex-wrap:wrap;gap:6px;}
+        .i-club{padding:4px 10px;border:1px solid rgba(228,220,210,0.08);font-size:10px;font-weight:300;color:rgba(228,220,210,0.55);letter-spacing:1px;}
+        .i-bio{font-size:12px;font-weight:300;line-height:1.8;color:rgba(228,220,210,0.6);min-height:40px;}
+        .i-bio .cursor{display:inline-block;width:1px;height:14px;background:rgba(212,180,80,0.6);margin-left:2px;animation:blink 0.8s infinite;}
+        @@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+
+        .legend-x{position:fixed;top:24px;right:24px;z-index:102;width:44px;height:44px;border-radius:50%;border:1px solid rgba(228,220,210,0.1);background:rgba(0,0,0,0.4);color:rgba(228,220,210,0.5);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.3s ease;opacity:0;visibility:hidden;}
+        .legend-bg.open ~ .legend-x{opacity:1;visibility:visible;}
+        .legend-x:hover{border-color:rgba(228,220,210,0.3);color:#e8e4df;transform:rotate(90deg);}
+
+        @@media(max-width:900px){
+            .legend-info{right:auto;left:50%;top:auto;bottom:20px;transform:translateX(-50%);width:90%;max-height:35vh;overflow-y:auto;}
+            .legend-bg.open ~ .legend-info{transform:translateX(-50%);}
+            .legend-card{width:280px;height:420px;}
+            .carousel-track,.card-3d{width:260px;height:400px;}
+        }
+        @@media(max-width:600px){
+            .carousel-track,.card-3d{width:230px;height:360px;}
+            .nav-btn{width:38px;height:38px;font-size:13px;}.nav-prev{left:10px;}.nav-next{right:10px;}
+            .legend-card{width:240px;height:370px;}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="mosaic-bg">
+        <div class="mosaic-col"><img src="/imagenes/pexels-gonzalo-acuna-166058093-18918178.jpg" alt=""></div>
+        <div class="mosaic-col"><img src="/imagenes/pexels-el-gringo-photo-116752370-10184002.jpg" alt=""></div>
+        <div class="mosaic-col"><img src="/imagenes/pexels-bilal-yahya-2158113463-35162974.jpg" alt=""></div>
+        <div class="mosaic-col"><img src="/imagenes/pexels-el-gringo-photo-116752370-10287249.jpg" alt=""></div>
+        <div class="mosaic-col"><img src="/imagenes/pexels-unknown6user-1657328.jpg" alt=""></div>
+    </div>
+    <div class="mosaic-overlay" id="overlay"></div>
+    <div class="particles" id="particles"></div>
+
+    <header class="header">
+        <div class="header-tag">Legends Collection</div>
+        <h1 class="header-title">Leyendas del Futbol</h1>
+        <p class="header-sub">Los mejores jugadores de la historia</p>
+    </header>
+
+    <button class="nav-btn nav-prev" id="prevBtn">&#10094;</button>
+    <button class="nav-btn nav-next" id="nextBtn">&#10095;</button>
+
+    <div class="carousel-section">
+        <div class="carousel-track" id="track3d"></div>
+    </div>
+
+    <div class="dots" id="dots"></div>
+    <div class="add-wrap"><a href="/Catalogo/Agregar" class="add-btn">+ Agregar Jugador</a></div>
+
+    <!-- LEGEND -->
+    <div class="legend-bg" id="legendBg">
+        <div class="legend-card">
+            <div class="l-top">
+                <div><div class="l-num" id="lNum"></div><div class="l-pos" id="lPos"></div></div>
+                <div><div class="l-flag" id="lFlag"></div><div class="l-code" id="lCode"></div></div>
+            </div>
+            <div class="l-center">
+                <div class="l-glow"></div>
+                <div class="l-sil"><svg viewBox="0 0 100 160"><circle cx="50" cy="22" r="16"/><path d="M50 40 C28 40 20 65 20 82 L80 82 C80 65 72 40 50 40Z"/><rect x="24" y="82" width="18" height="48" rx="7"/><rect x="58" y="82" width="18" height="48" rx="7"/></svg></div>
+            </div>
+            <div class="l-bottom">
+                <div class="l-line"></div>
+                <div class="l-name" id="lName"></div>
+                <div class="l-team" id="lTeam"></div>
+                <div class="l-stats">
+                    <div><div class="l-sv" id="lGoals"></div><div class="l-sl">Goles</div></div>
+                    <div><div class="l-sv" id="lAssists"></div><div class="l-sl">Asist</div></div>
+                    <div><div class="l-sv" id="lMatches"></div><div class="l-sl">PJ</div></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="legend-info" id="legendInfo">
+        <div class="i-section"><div class="i-title">Datos</div>
+            <div class="i-specs">
+                <div class="i-spec"><div class="i-sv" id="lBirth"></div><div class="i-sl">Nacimiento</div></div>
+                <div class="i-spec"><div class="i-sv" id="lHeight"></div><div class="i-sl">Altura</div></div>
+                <div class="i-spec"><div class="i-sv" id="lWeight"></div><div class="i-sl">Peso</div></div>
+                <div class="i-spec"><div class="i-sv" id="lFoot"></div><div class="i-sl">Pie</div></div>
+            </div>
+        </div>
+        <div class="i-section"><div class="i-title">Clubes</div><div class="i-clubs" id="lClubs"></div></div>
+        <div class="i-section"><div class="i-title">Biografia</div><div class="i-bio" id="lBio"></div></div>
+    </div>
+    <button class="legend-x" id="legendX">&times;</button>
+
+    <script>
+        var players = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model, new System.Text.Json.JsonSerializerOptions { PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase }));
+        var cur=0,total=players.length,track=document.getElementById('track3d'),typeTimer=null;
+
+        // Particles
+        !function(){var c=document.getElementById('particles');for(var i=0;i<35;i++){var p=document.createElement('div');p.className='particle';p.style.left=Math.random()*100+'%';p.style.animationDuration=(Math.random()*18+10)+'s';p.style.animationDelay=Math.random()*5+'s';c.appendChild(p);}}();
+
+        // Build
+        function build(){
+            track.innerHTML='';
+            var svg='<svg viewBox="0 0 100 160"><circle cx="50" cy="22" r="16"/><path d="M50 40 C28 40 20 65 20 82 L80 82 C80 65 72 40 50 40Z"/><rect x="24" y="82" width="18" height="48" rx="7"/><rect x="58" y="82" width="18" height="48" rx="7"/></svg>';
+            players.forEach(function(p,i){
+                var d=document.createElement('div');d.className='card-3d';d.setAttribute('data-i',i);
+                d.innerHTML='<div class="card-face"><div class="c-header"><div><div class="c-num">'+(p.numeroCamiseta||'')+'</div><div class="c-pos">'+(p.posicionCorta||'')+'</div></div><div class="c-country"><div class="c-flag">'+(p.bandera||'')+'</div><div class="c-code">'+(p.paisCodigo||'')+'</div></div></div><div class="c-center"><div class="c-glow"></div><div class="c-sil">'+svg+'</div></div><div class="c-bottom"><div class="c-line"></div><div class="c-name">'+(p.nombre||'')+'</div><div class="c-team">'+(p.equipo||'')+'</div><div class="c-stats"><div><div class="c-sv">'+(p.goles||'')+'</div><div class="c-sl">Goles</div></div><div><div class="c-sv">'+(p.asistencias||'')+'</div><div class="c-sl">Asist</div></div><div><div class="c-sv">'+(p.partidos||'')+'</div><div class="c-sl">PJ</div></div></div></div></div>';
+                d.addEventListener('click',function(){openLegend(parseInt(this.getAttribute('data-i')));});
+                track.appendChild(d);
+            });
+            pos();
+        }
+
+        function pos(){
+            var cards=track.querySelectorAll('.card-3d');
+            var step=360/total,radius=total<=3?380:450;
+            cards.forEach(function(c,i){
+                var angle=(i-cur)*step,rad=angle*Math.PI/180;
+                var x=Math.sin(rad)*radius,z=Math.cos(rad)*radius-radius;
+                var s=0.55+((z+radius)/(radius*2))*0.45;
+                c.style.transform='translateX('+x+'px) translateZ('+z+'px) scale('+s+')';
+                c.style.opacity=s<0.65?0.3:1;
+                c.style.zIndex=Math.round(s*100);
+                c.style.filter=s>0.9?'brightness(1.15)':'brightness('+(0.5+s*0.5)+')';
+            });
+            updDots();
+        }
+
+        document.getElementById('prevBtn').addEventListener('click',function(){cur=(cur-1+total)%total;pos();});
+        document.getElementById('nextBtn').addEventListener('click',function(){cur=(cur+1)%total;pos();});
+
+        function buildDots(){var c=document.getElementById('dots');c.innerHTML='';for(var i=0;i<total;i++){var d=document.createElement('div');d.className='dot'+(i===cur?' active':'');d.setAttribute('data-i',i);d.addEventListener('click',function(){cur=parseInt(this.getAttribute('data-i'));pos();});c.appendChild(d);}}
+        function updDots(){document.querySelectorAll('.dot').forEach(function(d,i){d.classList.toggle('active',i===cur);});}
+
+        document.addEventListener('keydown',function(e){
+            if(document.getElementById('legendBg').classList.contains('open')){if(e.key==='Escape')closeLegend();return;}
+            if(e.key==='ArrowLeft'){cur=(cur-1+total)%total;pos();}
+            if(e.key==='ArrowRight'){cur=(cur+1)%total;pos();}
+        });
+
+        var tx=0;
+        track.addEventListener('touchstart',function(e){tx=e.changedTouches[0].screenX;},{passive:true});
+        track.addEventListener('touchend',function(e){var d=tx-e.changedTouches[0].screenX;if(Math.abs(d)>50){cur=d>0?(cur+1)%total:(cur-1+total)%total;pos();}},{passive:true});
+
+        // Typewriter
+        function typewrite(el,text,speed){
+            if(typeTimer) clearInterval(typeTimer);
+            el.innerHTML='';
+            var i=0;
+            var cursorSpan=document.createElement('span');
+            cursorSpan.className='cursor';
+            el.appendChild(cursorSpan);
+
+            typeTimer=setInterval(function(){
+                if(i<text.length){
+                    el.insertBefore(document.createTextNode(text.charAt(i)),cursorSpan);
+                    i++;
+                } else {
+                    clearInterval(typeTimer);
+                    setTimeout(function(){cursorSpan.remove();},1500);
+                }
+            },speed);
+        }
+
+        // Shorten bio
+        function shortenBio(text){
+            if(!text) return '';
+            var sentences=text.split('.');
+            var short=sentences.slice(0,2).join('.')+'.';
+            return short.length>120 ? short.substring(0,120)+'...' : short;
+        }
+
+        // Legend
+        function openLegend(i){
+            var p=players[i];
+            document.getElementById('lNum').textContent=p.numeroCamiseta||'';
+            document.getElementById('lPos').textContent=p.posicionCorta||'';
+            document.getElementById('lFlag').textContent=p.bandera||'';
+            document.getElementById('lCode').textContent=p.paisCodigo||'';
+            document.getElementById('lName').textContent=p.nombre||'';
+            document.getElementById('lTeam').textContent=(p.equipo||'')+' / '+(p.posicion||'');
+            document.getElementById('lGoals').textContent=p.goles||'';
+            document.getElementById('lAssists').textContent=p.asistencias||'';
+            document.getElementById('lMatches').textContent=p.partidos||'';
+            document.getElementById('lBirth').textContent=p.fechaNacimiento||'';
+            document.getElementById('lHeight').textContent=(p.alturaCm||'')+'cm';
+            document.getElementById('lWeight').textContent=(p.pesoKg||'')+'kg';
+            document.getElementById('lFoot').textContent=p.pieDominante||'';
+
+            var clubs=document.getElementById('lClubs');clubs.innerHTML='';
+            if(p.clubes)(p.clubes+'').split(',').forEach(function(c){var s=document.createElement('span');s.className='i-club';s.textContent=c.trim();clubs.appendChild(s);});
+
+            // Typewriter bio
+            var bioEl=document.getElementById('lBio');
+            var shortBio=shortenBio(p.descripcion||'');
+            setTimeout(function(){typewrite(bioEl,shortBio,35);},600);
+
+            document.getElementById('overlay').classList.add('dimmed');
+            document.getElementById('legendBg').classList.add('open');
+        }
+
+        function closeLegend(){
+            if(typeTimer) clearInterval(typeTimer);
+            document.getElementById('overlay').classList.remove('dimmed');
+            document.getElementById('legendBg').classList.remove('open');
+        }
+
+        document.getElementById('legendX').addEventListener('click',closeLegend);
+        document.getElementById('legendBg').addEventListener('click',function(e){if(e.target===this)closeLegend();});
+
+        build();buildDots();
+    </script>
+</body>
+</html>
