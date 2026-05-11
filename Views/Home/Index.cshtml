@@ -38,6 +38,83 @@
             z-index: 0;
         }
 
+        /* ===== NAVBAR ===== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 50;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 40px;
+            background: linear-gradient(180deg, rgba(6,8,16,0.4) 0%, transparent 100%);
+            backdrop-filter: blur(4px);
+        }
+
+        .nav-left, .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        .nav-link {
+            font-family: 'Raleway', sans-serif;
+            font-size: 11px;
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: rgba(228, 220, 210, 0.45);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 4px 0;
+            position: relative;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: rgba(212, 180, 80, 0.5);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: rgba(228, 220, 210, 0.85);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link.active {
+            color: rgba(228, 220, 210, 0.7);
+        }
+
+        .nav-link.active::after {
+            width: 100%;
+            background: rgba(212, 180, 80, 0.3);
+        }
+
+        .nav-login {
+            border: 1px solid rgba(228, 220, 210, 0.15);
+            padding: 6px 18px;
+            letter-spacing: 2px;
+        }
+
+        .nav-login:hover {
+            border-color: rgba(212, 180, 80, 0.4);
+            background: rgba(212, 180, 80, 0.05);
+        }
+
+        .nav-login::after {
+            display: none;
+        }
+
         /* ===== HERO ===== */
         .hero {
             position: relative;
@@ -48,7 +125,7 @@
             align-items: center;
             justify-content: center;
             text-align: center;
-            padding: 40px 40px 140px;
+            padding: 70px 40px 140px;
             background: linear-gradient(180deg, rgba(10,10,15,0.55) 0%, rgba(10,10,15,0.75) 100%);
         }
 
@@ -302,7 +379,10 @@
 
         /* ===== RESPONSIVE ===== */
         @@media (max-width: 768px) {
-            .hero { padding: 20px 20px 130px; }
+            .navbar { padding: 12px 20px; }
+            .nav-left, .nav-right { gap: 16px; }
+            .nav-link { font-size: 9px; letter-spacing: 2px; }
+            .hero { padding: 60px 20px 130px; }
             .title { font-size: clamp(28px, 6vw, 44px); letter-spacing: 4px; }
             .buttons { gap: 14px; flex-direction: column; width: 100%; max-width: 280px; margin-bottom: 30px; }
             .btn { width: 100%; justify-content: center; }
@@ -333,6 +413,18 @@
         </video>
     </div>
     <div class="video-overlay"></div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <div class="nav-left">
+            <a href="/" class="nav-link active">Home</a>
+            <a href="/Home/Privacy" class="nav-link">Privacy</a>
+        </div>
+        <div class="nav-right">
+            <a href="/Identity/Account/Register" class="nav-link">Register</a>
+            <a href="/Identity/Account/Login" class="nav-link nav-login">Login</a>
+        </div>
+    </nav>
 
     <!-- HERO -->
     <section class="hero">
@@ -492,28 +584,19 @@
     </div>
 
     <script>
-        // ===== STRIP DE JUGADORES HORIZONTAL CON JS =====
+        // ===== STRIP DE JUGADORES =====
         (function() {
             const track = document.getElementById('stripTrack');
             const poses = [
-                // Corriendo con balón
                 '<svg viewBox="0 0 60 80" fill="none" stroke="rgba(228,220,210,0.5)" stroke-width="2" stroke-linecap="round"><circle cx="22" cy="10" r="7"/><line x1="22" y1="17" x2="26" y2="40"/><line x1="24" y1="26" x2="12" y2="35"/><line x1="24" y1="26" x2="38" y2="30"/><line x1="26" y1="40" x2="16" y2="60"/><line x1="26" y1="40" x2="40" y2="56"/><circle cx="44" cy="56" r="4" stroke-width="1.5"/></svg>',
-                // Pateando fuerte
                 '<svg viewBox="0 0 60 80" fill="none" stroke="rgba(228,220,210,0.5)" stroke-width="2" stroke-linecap="round"><circle cx="20" cy="10" r="7"/><line x1="20" y1="17" x2="24" y2="40"/><line x1="22" y1="26" x2="8" y2="32"/><line x1="22" y1="26" x2="36" y2="22"/><line x1="24" y1="40" x2="14" y2="60"/><line x1="24" y1="40" x2="44" y2="34"/><line x1="44" y1="34" x2="52" y2="26"/><circle cx="55" cy="22" r="4" stroke-width="1.5"/></svg>',
-                // Cabeceando
                 '<svg viewBox="0 0 60 80" fill="none" stroke="rgba(228,220,210,0.5)" stroke-width="2" stroke-linecap="round"><circle cx="30" cy="14" r="7"/><circle cx="30" cy="4" r="3.5" stroke-width="1.5"/><line x1="30" y1="21" x2="30" y2="44"/><line x1="30" y1="30" x2="16" y2="38"/><line x1="30" y1="30" x2="44" y2="38"/><line x1="30" y1="44" x2="22" y2="64"/><line x1="30" y1="44" x2="38" y2="64"/></svg>',
-                // Driblando
                 '<svg viewBox="0 0 60 80" fill="none" stroke="rgba(228,220,210,0.5)" stroke-width="2" stroke-linecap="round"><circle cx="30" cy="10" r="7"/><line x1="30" y1="17" x2="28" y2="42"/><line x1="29" y1="26" x2="14" y2="28"/><line x1="14" y1="28" x2="10" y2="38"/><line x1="29" y1="26" x2="44" y2="30"/><line x1="28" y1="42" x2="18" y2="60"/><line x1="28" y1="42" x2="40" y2="58"/><circle cx="12" cy="42" r="4" stroke-width="1.5"/></svg>',
-                // Celebrando brazos arriba
                 '<svg viewBox="0 0 60 80" fill="none" stroke="rgba(228,220,210,0.5)" stroke-width="2" stroke-linecap="round"><circle cx="30" cy="10" r="7"/><line x1="30" y1="17" x2="30" y2="42"/><line x1="30" y1="24" x2="16" y2="12"/><line x1="30" y1="24" x2="44" y2="12"/><line x1="30" y1="42" x2="22" y2="62"/><line x1="30" y1="42" x2="38" y2="62"/></svg>',
-                // Chilena
                 '<svg viewBox="0 0 60 80" fill="none" stroke="rgba(228,220,210,0.5)" stroke-width="2" stroke-linecap="round"><circle cx="36" cy="32" r="7"/><line x1="36" y1="39" x2="26" y2="50"/><line x1="30" y1="44" x2="14" y2="40"/><line x1="30" y1="44" x2="18" y2="54"/><line x1="26" y1="50" x2="40" y2="58"/><line x1="26" y1="50" x2="10" y2="54"/><circle cx="46" cy="22" r="4" stroke-width="1.5"/><line x1="40" y1="58" x2="50" y2="26"/></svg>',
-                // Regateando
                 '<svg viewBox="0 0 60 80" fill="none" stroke="rgba(228,220,210,0.5)" stroke-width="2" stroke-linecap="round"><circle cx="28" cy="10" r="7"/><line x1="28" y1="17" x2="32" y2="42"/><line x1="30" y1="26" x2="46" y2="28"/><line x1="30" y1="26" x2="16" y2="34"/><line x1="32" y1="42" x2="22" y2="62"/><line x1="32" y1="42" x2="46" y2="56"/><circle cx="50" cy="54" r="4" stroke-width="1.5"/></svg>',
-                // Portero atajando
                 '<svg viewBox="0 0 60 80" fill="none" stroke="rgba(228,220,210,0.5)" stroke-width="2" stroke-linecap="round"><circle cx="30" cy="10" r="7"/><line x1="30" y1="17" x2="30" y2="42"/><line x1="30" y1="24" x2="8" y2="20"/><line x1="30" y1="24" x2="52" y2="20"/><line x1="30" y1="42" x2="20" y2="60"/><line x1="30" y1="42" x2="40" y2="60"/><circle cx="6" cy="16" r="4" stroke-width="1.5"/></svg>'
             ];
-
             for (let set = 0; set < 3; set++) {
                 poses.forEach(function(svg) {
                     const div = document.createElement('div');
@@ -522,7 +605,6 @@
                     track.appendChild(div);
                 });
             }
-
             let pos = 0;
             const speed = 0.8;
             function animate() {
@@ -535,13 +617,13 @@
             requestAnimationFrame(animate);
         })();
 
-        // ===== REVEAL ON SCROLL =====
+        // ===== REVEAL =====
         const revealObs = new IntersectionObserver(function(entries) {
             entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('visible'); });
         }, { threshold: 0.15 });
         document.querySelectorAll('.reveal').forEach(function(el) { revealObs.observe(el); });
 
-        // ===== STAGGER JUGADORES =====
+        // ===== STAGGER =====
         const staggerObs = new IntersectionObserver(function(entries) {
             entries.forEach(function(e) {
                 if (e.isIntersecting) {
@@ -554,7 +636,7 @@
         }, { threshold: 0.2 });
         document.querySelectorAll('.home-players-grid').forEach(function(g) { staggerObs.observe(g); });
 
-        // ===== LÍNEAS ANIMADAS =====
+        // ===== LÍNEAS =====
         const lineObs = new IntersectionObserver(function(entries) {
             entries.forEach(function(e) { if (e.isIntersecting) e.target.classList.add('visible'); });
         }, { threshold: 0.5 });
@@ -583,7 +665,7 @@
         }, { threshold: 0.3 });
         document.querySelectorAll('.stats-section').forEach(function(s) { counterObs.observe(s); });
 
-        // ===== GLOW ESCUDOS =====
+        // ===== GLOW =====
         var glowObs = new IntersectionObserver(function(entries) {
             entries.forEach(function(e) {
                 if (e.isIntersecting) { var b = e.target.querySelector('.club-badge'); if (b) b.classList.add('glow'); }
@@ -591,13 +673,13 @@
         }, { threshold: 0.3 });
         document.querySelectorAll('.club-row').forEach(function(r) { glowObs.observe(r); });
 
-        // ===== PARALLAX VIDEO =====
+        // ===== PARALLAX =====
         var vid = document.querySelector('.video-bg video');
         window.addEventListener('scroll', function() {
             if (vid) vid.style.transform = 'translateY(' + (window.scrollY * 0.15) + 'px)';
         }, { passive: true });
 
-        // ===== TEXTO QUE SE ESCRIBE =====
+        // ===== TYPEWRITER =====
         var achObs = new IntersectionObserver(function(entries) {
             entries.forEach(function(e) {
                 if (e.isIntersecting) {
